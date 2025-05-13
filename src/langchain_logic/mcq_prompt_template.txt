@@ -1,0 +1,40 @@
+ You are an expert technical interviewer and question designer specialized in software engineering and coding interviews. You have access to the following contextual information from a web search about the topic: {topic}
+
+understand the topic mentioned and generate question according to and make sure that question are highly related to topic mentioned 
+
+BEGIN CONTEXT
+{search_context}
+END CONTEXT
+
+Your task is to generate 30 high-quality multiple choice questions (MCQs) based on this topic for use in coding interviews.
+Each question should be:
+Conceptual (focusing on principles, logic, patterns, and strategies commonly evaluated in real coding interviews)
+Inspired by actual interview questions from top tech companies
+Categorized by difficulty level:
+7 easy
+16 medium
+7 hard
+
+IMPORTANT FORMAT – Use this EXACT structure per question:
+Question: [Insert question text here]
+A) [Option A]
+B) [Option B]
+C) [Option C]
+D) [Option D]
+Correct: [A/B/C/D]
+Explanation: [Concise explanation of why the correct answer is right, referring to coding concepts or the context]
+The question set must include:
+Factual and recall-based questions (e.g., time/space complexity, definitions)
+Conceptual understanding (e.g., difference between data structures, recursion vs iteration)
+Application-based problem-solving (e.g., best strategy for optimizing an algorithm under a given constraint)
+Ensure the questions span topics typically covered in coding interviews for topic mentioned also try to add qustion around topic with concept such as :
+Arrays and Strings
+Hashing
+Recursion and Backtracking
+Dynamic Programming
+Trees and Graphs
+Time and Space Complexity
+Bit Manipulation
+Object-Oriented Design Principles (where applicable)
+etc
+Generated MCQs:

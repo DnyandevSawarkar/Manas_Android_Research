@@ -13,8 +13,10 @@ except OSError as e:
 def generate_pdf_from_data(data):
     """Generates a PDF from mock test data using WeasyPrint or saves as HTML if WeasyPrint is not available."""
     topic = data.get("topic", "Mock Test")
-    theory_questions = data.get("theory_questions", [])
+    mcq_questions = data.get("mcq_questions", [])
     coding_questions = data.get("coding_questions", [])
+    mcq_score = data.get("mcq_score", None)
+    include_coding = data.get("include_coding", True)
 
     html_content = f"""
     <!DOCTYPE html>
@@ -39,24 +41,37 @@ def generate_pdf_from_data(data):
     <body>
         <h1>Interview Mock Test: {topic.capitalize()}</h1>
 
-        <h2>Theory Questions</h2>
-    """
-    if theory_questions:
-        html_content += "<table><thead><tr><th class=\"question-number\">#</th><th>Question</th></tr></thead><tbody>"
-        for i, tq in enumerate(theory_questions):
-            html_content += f"<tr><td>{i+1}</td><td>{tq.get('question', 'N/A')}</td></tr>" # Corrected quotes and ensured line break
+        <h2>MCQ Questions</h2>
+        """
+    if mcq_questions:
+        html_content += "<table><thead><tr><th class=\"question-number\">#</th><th>Question</th><th>Options</th></tr></thead><tbody>"
+        letters = ['A', 'B', 'C', 'D']
+        for i, mcq in enumerate(mcq_questions):
+            options_html = "<br>".join([
+                f"{letters[j]}) {option}" for j, option in enumerate(mcq.get('options', []))
+            ])
+            html_content += f"""
+            <tr>
+                <td>{i+1}</td>
+                <td>{mcq.get('question', 'N/A')}</td>
+                <td>{options_html}</td>
+            </tr>
+            """
         html_content += "</tbody></table>"
+
+        if mcq_score is not None:
+            html_content += f"<p><strong>MCQ Score:</strong> {mcq_score}</p>"
     else:
-        html_content += "<p>No theory questions generated.</p>"
+        html_content += "<p>No MCQ questions generated.</p>"
 
     html_content += "<h2>Coding Questions</h2>"
     if coding_questions:
         html_content += "<table><thead><tr><th class=\"question-number\">#</th><th>Problem Statement</th><th>Difficulty</th><th>Input/Output</th></tr></thead><tbody>"
         for i, cq in enumerate(coding_questions):
-            problem_statement = cq.get('problem_statement', 'N/A').replace("\n", "<br>") # Corrected quotes
-            constraints = cq.get('constraints', 'N/A').replace("\n", "<br>") # Corrected quotes
-            input_output = cq.get('input_output', 'N/A').replace("\n", "<br>") # Corrected quotes
-            difficulty = cq.get('difficulty', 'N/A') # Corrected quotes
+            problem_statement = cq.get('problem_statement', 'N/A').replace("\n", "<br>")
+            constraints = cq.get('constraints', 'N/A').replace("\n", "<br>")
+            input_output = cq.get('input_output', 'N/A').replace("\n", "<br>")
+            difficulty = cq.get('difficulty', 'N/A')
             html_content += f"""
             <tr>
                 <td>{i+1}</td>

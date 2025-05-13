@@ -1,5 +1,7 @@
 # /home/ubuntu/mock_interview_app/src/langchain_logic/question_generator.py
 
+import os
+import re
 from langchain_core.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain_together import Together
@@ -29,16 +31,53 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 theory_prompt_template_str = load_prompt_template(os.path.join(current_dir, "theory_prompt_template.txt"))
 coding_prompt_template_str = load_prompt_template(os.path.join(current_dir, "coding_prompt_template.txt"))
+mcq_prompt_template_str = load_prompt_template(os.path.join(current_dir, "mcq_prompt_template.txt"))
 
-# Updated theory prompt to include search_context
+# Updated prompts to include search_context
 theory_prompt = PromptTemplate(template=theory_prompt_template_str, input_variables=["topic", "search_context"])
 coding_prompt = PromptTemplate(template=coding_prompt_template_str, input_variables=["topic"])
+mcq_prompt = PromptTemplate(template=mcq_prompt_template_str, input_variables=["topic", "search_context"])
 
 theory_chain = LLMChain(llm=llm, prompt=theory_prompt)
 coding_chain = LLMChain(llm=llm, prompt=coding_prompt)
+mcq_chain = LLMChain(llm=llm, prompt=mcq_prompt)
+
+def parse_mcq_questions(text_response):
+    """Parses the LLM response for MCQ questions into a structured format."""
+    questions = []
+    current_question = None
+    lines = text_response.strip().split("\n")
+    
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+            
+        if line.startswith("Q") and "." in line[:10]:
+            if current_question:
+                questions.append(current_question)
+            current_question = {
+                "question": line.split(".", 1)[1].strip(),
+                "options": [],
+                "correct_answer": None,
+                "explanation": None
+            }
+        elif current_question and line.startswith(("a)", "b)", "c)", "d)")):
+            option_letter = line[0]
+            option_text = line[2:].strip()
+            current_question["options"].append({"letter": option_letter, "text": option_text})
+        elif current_question and line.startswith("Answer:"):
+            current_question["correct_answer"] = line.split(":", 1)[1].strip()
+        elif current_question and line.startswith("Explanation:"):
+            current_question["explanation"] = line.split(":", 1)[1].strip()
+            
+    if current_question:
+        questions.append(current_question)
+        
+    return questions
 
 def generate_theory_questions(topic):
-    """Generates theory questions for a given topic using Langchain and Tavily search."""
+    """Generates MCQ questions for a given topic using Langchain and Tavily search."""
     try:
         print(f"Generating theory questions for topic: {topic}")
         # Perform a web search for the topic
@@ -51,9 +90,9 @@ def generate_theory_questions(topic):
 
         response = theory_chain.invoke({"topic": topic, "search_context": search_context})
         questions_text = response.get("text", "").strip()
-        questions_list = [q.strip() for q in questions_text.split("\n") if q.strip() and q.strip()[0].isdigit()]
-        print(f"Generated theory questions: {len(questions_list)}")
-        return [{"question": q.split(". ", 1)[1] if ". " in q else q} for q in questions_list]
+        mcq_questions = parse_mcq_questions(questions_text)
+        print(f"Generated MCQ questions: {len(mcq_questions)}")
+        return mcq_questions
     except Exception as e:
         print(f"Error generating theory questions: {e}")
         # Fallback to generation without search if Tavily fails (e.g. API key issue)
@@ -123,9 +162,18 @@ def parse_coding_questions(text_response):
                 active_field = "input_output"
         elif any(line_stripped.lower().startswith(prefix) for prefix in ["difficulty:", "difficulty tag:", "level:"]):
             if current_question:
-                current_question["difficulty"] = line_stripped.split(":", 1)[1].strip()
-                active_field = "difficulty"
-        elif active_field and current_question: # Append to the last active field if it spans multiple lines
+                difficulty_text = line_stripped.split(":", 1)[1].strip()
+                # Extract just Easy/Medium/Hard from the text
+                if "easy" in difficulty_text.lower():
+                    current_question["difficulty"] = "Easy"
+                elif "medium" in difficulty_text.lower():
+                    current_question["difficulty"] = "Medium"
+                elif "hard" in difficulty_text.lower():
+                    current_question["difficulty"] = "Hard"
+                else:
+                    current_question["difficulty"] = "Medium"  # Default to Medium if unclear
+                active_field = None  # Stop collecting additional lines
+        elif active_field and current_question and active_field != "difficulty": # Append to the last active field if it spans multiple lines
             current_question[active_field] += "\n" + line_stripped
     
     if current_question: # Append the last question
@@ -148,10 +196,89 @@ def generate_coding_questions(topic):
     try:
         response = coding_chain.invoke({"topic": topic})
         questions_text = response.get("text", "").strip()
-        print(f"Generated coding questions: {len(questions_text.split('\n'))}")
-        return parse_coding_questions(questions_text)
+        parsed_questions = parse_coding_questions(questions_text)
+        print(f"Generated coding questions: {len(parsed_questions)}")
+        
+        # Take exactly 2 questions
+        return parsed_questions[:2] if len(parsed_questions) >= 2 else parsed_questions
     except Exception as e:
         print(f"Error generating coding questions: {e}")
+        return []
+
+def parse_mcq_questions(text_response):
+    """Parses MCQ questions from the LLM response."""
+    questions = []
+    current_question = None
+    
+    # Split the text into lines and process each line
+    lines = text_response.strip().split('\n')
+    print(f"Parsing {len(lines)} lines of MCQ response")
+    
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+            
+        # Start of a new question - more flexible matching
+        if (re.match(r'^\d+\.\s*Question:', line) or 
+            re.match(r'^\d+\.', line) or 
+            line.lower().startswith('question')):
+            if current_question:
+                questions.append(current_question)
+            current_question = {
+                'question': re.sub(r'^(\d+\.)?\s*(Question:)?\s*', '', line).strip(),
+                'options': [],
+                'correct': None,
+                'explanation': None
+            }
+            print(f"Found question: {current_question['question'][:50]}...")
+        # Option line
+        elif current_question and re.match(r'^[A-D]\)', line):
+            option = line.split(')', 1)[1].strip()
+            current_question['options'].append(option)
+        # Correct answer line
+        elif current_question and line.startswith('Correct:'):
+            current_question['correct'] = line.split(':', 1)[1].strip()
+        # Explanation line
+        elif current_question and line.startswith('Explanation:'):
+            current_question['explanation'] = line.split(':', 1)[1].strip()
+            
+    # Append the last question
+    if current_question:
+        questions.append(current_question)
+        
+    return [q for q in questions if len(q['options']) == 4 and q['correct'] and q['explanation']]
+
+def generate_mcq_questions(topic):
+    """Generates MCQ questions for a given topic using Langchain and Tavily search."""
+    try:
+        print(f"Generating MCQ questions for topic: {topic}")
+        # Perform a web search for the topic
+        search_results = tavily_search.invoke(topic)
+        
+        # Format search results for the prompt
+        search_context = "\n".join([f"Source: {res.get('url', 'N/A')}\nContent: {res.get('content', 'N/A')}" for res in search_results])
+        if not search_context:
+            search_context = "No specific context found from web search."
+            print("Warning: No search context available, using base knowledge only")
+            
+        response = mcq_chain.invoke({"topic": topic, "search_context": search_context})
+        questions_text = response.get("text", "").strip()
+        print(f"Raw MCQ response (first 200 chars): {questions_text[:200]}")
+        
+        questions = parse_mcq_questions(questions_text)
+        print(f"Generated MCQ questions: {len(questions)}")
+        
+        # If no questions generated, try fallback without search context
+        if not questions:
+            print("Attempting fallback MCQ generation without search context...")
+            fallback_response = mcq_chain.invoke({"topic": topic, "search_context": "Generate questions using your base knowledge."})
+            questions = parse_mcq_questions(fallback_response.get("text", "").strip())
+            print(f"Fallback generated {len(questions)} MCQ questions")
+            
+        return questions
+    except Exception as e:
+        print(f"Error generating MCQ questions: {e}")
         return []
 
 if __name__ == '__main__':
@@ -184,6 +311,18 @@ if __name__ == '__main__':
                         print(f"  Difficulty: {q_data['difficulty']}") # Corrected here
                 else:
                     print("No coding questions generated.")
+                
+                print(f"\n--- Generating MCQ Questions for: {test_topic} ---")
+                mcq_q = generate_mcq_questions(test_topic)
+                if mcq_q:
+                    for i, q_data in enumerate(mcq_q):
+                        print(f"Question {i+1}:")
+                        print(f"  Question: {q_data['question']}")
+                        print(f"  Options: {', '.join(q_data['options'])}")
+                        print(f"  Correct: {q_data['correct']}")
+                        print(f"  Explanation: {q_data['explanation']}")
+                else:
+                    print("No MCQ questions generated.")
             else:
                 break
     else:

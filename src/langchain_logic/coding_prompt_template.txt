@@ -6,13 +6,13 @@ Question 1:
 Problem Statement: [Write the problem description here]
 Constraints: [Write any constraints here]
 Sample Input/Output: [Provide examples]
-Difficulty Tag: [Easy/Medium/Hard]
+Difficulty Tag: Easy/Medium/Hard (choose one only)
 
 Question 2:
 Problem Statement: [Write the problem description here]
 Constraints: [Write any constraints here]
 Sample Input/Output: [Provide examples]
-Difficulty Tag: [Easy/Medium/Hard]
+Difficulty Tag: Easy/Medium/Hard (choose one only)
 
 Ensure the questions are realistic, appropriate difficulty level, and suitable for a technical interview about {topic}.
 Make sure to include all four required sections for each question.

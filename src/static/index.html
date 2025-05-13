@@ -11,46 +11,69 @@
         <h1>Interview Mock Test Generator</h1>
         <div class="input-section">
             <input type="text" id="topicInput" placeholder="Enter a topic (e.g., Operating Systems)">
+            <div class="options-section">
+                <label class="coding-option">
+                    <input type="checkbox" id="includeCoding" unchecked>
+                    <span>Include coding questions</span>
+                </label>
+            </div>
             <button id="generateBtn">Generate Mock Test</button>
         </div>
+        <div id="timerSection" class="timer-section">
+            <div class="timer-display">
+                <span id="timeRemaining">60:00</span>
+                <div class="section-info">
+                    <span id="currentSection">Aptitude Section</span>
+                </div>
+            </div>
+        </div>
         <div id="mockTestOutput" class="output-section">
-            <h2>Generated Mock Test</h2>
-            <div id="theoryQuestions">
-                <h3>Theory Questions</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Question</th>
-                        </tr>
-                    </thead>
-                    <tbody id="theoryQuestionsTableBody">
-                        <!-- Theory questions will be populated here -->
-                    </tbody>
-                </table>
+            <div id="aptitudeSection" class="test-section">
+                <h2>Section 1: Aptitude Test (60 minutes)</h2>
+                <div class="score-info">
+                    <p>Marking scheme: +4 for correct, -1 for incorrect</p>
+                    <div id="testResults" style="display: none;">
+                        <h3>Test Results</h3>
+                        <p id="currentScore">Final Score: <span id="scoreValue">0</span></p>
+                        <p>Correct Answers: <span id="correctCount">0</span></p>
+                        <p>Incorrect Answers: <span id="incorrectCount">0</span></p>
+                    </div>
+                </div>
+                <div id="theoryQuestions">
+                    <h3>Multiple Choice Questions</h3>
+                    <div id="theoryQuestionsTableBody" class="mcq-container">
+                        <!-- MCQ questions will be populated here -->
+                    </div>
+                </div>
+                <div class="test-controls">
+                    <div class="button-container">
+                        <button id="nextSectionBtn" style="display: none;">Proceed to Coding Section</button>
+                        <button id="endTestBtn" class="end-test-btn">End Test</button>
+                    </div>
+                </div>
             </div>
-            <div id="codingQuestions">
-                <h3>Coding Questions</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Problem Statement</th>
-                            <th>Difficulty</th>
-                            <th>Input/Output</th>
-                        </tr>
-                    </thead>
-                    <tbody id="codingQuestionsTableBody">
-                        <!-- Coding questions will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="export-options">
-                <button id="exportPdfBtn">Export as PDF</button>
-                <button id="copyClipboardBtn">Copy to Clipboard</button>
+            
+            <div id="codingSection" class="test-section" style="display: none;">
+                <h2>Section 2: Coding Test (60 minutes)</h2>
+                <div id="codingQuestions">
+                    <h3>Coding Questions</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Problem Statement</th>
+                                <th>Difficulty</th>
+                                <th>Input/Output</th>
+                            </tr>
+                        </thead>
+                        <tbody id="codingQuestionsTableBody">
+                            <!-- Coding questions will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="script2.js"></script>
 </body>
 </html>

@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from flask import Flask, send_from_directory, request, jsonify, Response
 
 # Import question generation functions
-from src.langchain_logic import generate_theory_questions, generate_coding_questions
+from src.langchain_logic.question_generator import generate_mcq_questions, generate_coding_questions
 # Import PDF generation function
 from src.pdf_exporter import generate_pdf_from_data
 
@@ -32,13 +32,31 @@ def handle_generate_mock_test():
         print("Warning: TAVILY_API_KEY is not set. Web search for theory questions will be skipped.")
 
     try:
-        theory_questions = generate_theory_questions(topic)
-        coding_questions = generate_coding_questions(topic)
+        # Get includeCoding parameter from request (matching frontend naming)
+        include_coding = data.get('includeCoding', True)
+        print(f"Include coding questions: {include_coding}")
+        
+        # Generate MCQ questions
+        mcq_questions = generate_mcq_questions(topic)
+        if not mcq_questions:
+            print("Warning: No MCQ questions were generated")
+            mcq_questions = []  # Ensure we return an empty list rather than None
+        
+        # Generate coding questions only if explicitly requested
+        coding_questions = []
+        if include_coding:
+            coding_questions = generate_coding_questions(topic)
+            if not coding_questions:
+                print("Warning: No coding questions were generated")
+        
+        # Debug output
+        print(f"Returning {len(mcq_questions)} MCQ questions and {len(coding_questions)} coding questions")
         
         return jsonify({
-            'topic': topic, # Also return topic for PDF generation context
-            'theory_questions': theory_questions,
-            'coding_questions': coding_questions
+            'topic': topic,
+            'mcq_questions': mcq_questions,
+            'coding_questions': coding_questions,
+            'include_coding': include_coding
         })
     except Exception as e:
         print(f"Error during question generation: {e}")
