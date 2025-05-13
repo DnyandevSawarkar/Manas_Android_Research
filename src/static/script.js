@@ -232,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentMockTestData = null; // Reset data
 
         try {
-            const response = await fetch("/generate_mock_test", {
+            const response = await fetch(`${config.apiUrl}/generate_mock_test`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -306,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
         exportPdfBtn.textContent = "Exporting...";
 
         try {
-            const response = await fetch("/export_pdf", {
+            const response = await fetch(`${config.apiUrl}/export_pdf`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
