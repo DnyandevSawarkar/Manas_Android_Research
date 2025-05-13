@@ -5,7 +5,13 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask import Flask, send_from_directory, request, jsonify, Response
-from flask_cors import CORS
+
+# Try to import CORS, but don't fail if it's not available
+try:
+    from flask_cors import CORS
+    has_cors = True
+except ImportError:
+    has_cors = False
 
 # Import question generation functions
 from src.langchain_logic.question_generator import generate_mcq_questions, generate_coding_questions
@@ -13,7 +19,17 @@ from src.langchain_logic.question_generator import generate_mcq_questions, gener
 from src.pdf_exporter import generate_pdf_from_data
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
-CORS(app)  # Enable CORS for all routes
+if has_cors:
+    CORS(app)  # Enable CORS for all routes
+else:
+    # Manual CORS headers
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        return response
+
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'asdf#FGSgvasgf$5$WGT_mock_interview')
 
 @app.route('/generate_mock_test', methods=['POST'])
