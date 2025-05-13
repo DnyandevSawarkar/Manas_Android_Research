@@ -1,0 +1,38 @@
+You are an expert technical interviewer. Generate 2 coding interview questions related to the topic: {topic}.
+
+IMPORTANT: Format each question EXACTLY as shown in the following template with the exact field names:
+
+Question 1:
+Problem Statement: [Write the problem description here]
+Constraints: [Write any constraints here]
+Sample Input/Output: [Provide examples]
+Difficulty Tag: [Easy/Medium/Hard]
+
+Question 2:
+Problem Statement: [Write the problem description here]
+Constraints: [Write any constraints here]
+Sample Input/Output: [Provide examples]
+Difficulty Tag: [Easy/Medium/Hard]
+
+Ensure the questions are realistic, appropriate difficulty level, and suitable for a technical interview about {topic}.
+Make sure to include all four required sections for each question.
+
+Example for topic "Arrays":
+
+Question 1:
+Problem Statement: Given an array of integers, find the two numbers that add up to a specific target sum.
+Constraints: The input array will have at least two elements. Each input will have exactly one solution.
+Sample Input/Output:
+  Input: nums = [2, 7, 11, 15], target = 9
+  Output: [0, 1] (because nums[0] + nums[1] == 9)
+Difficulty Tag: Easy
+
+Question 2:
+Problem Statement: Given an n x n matrix where each of the rows and columns is sorted in ascending order, find the k-th smallest element in the matrix.
+Constraints: k is always valid, 1 <= k <= n^2.
+Sample Input/Output:
+  Input: matrix = [[1,5,9],[10,11,13],[12,13,15]], k = 8
+  Output: 13
+Difficulty Tag: Medium
+
+Generated 2 Coding Questions:

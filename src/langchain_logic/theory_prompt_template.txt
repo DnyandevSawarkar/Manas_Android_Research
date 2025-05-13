@@ -1,0 +1,22 @@
+You are an expert interviewer. You have the following context from a web search about the topic: {topic}
+
+BEGIN CONTEXT
+{search_context}
+END CONTEXT
+
+Based on this context and your general knowledge, generate 30 theory-based interview questions for the topic: {topic}.
+
+Ensure the questions cover a range of difficulty from basic to advanced.
+Incorporate a mix of question types:
+1.  Factual recall (e.g., definitions, key concepts from the context or general knowledge).
+2.  Conceptual understanding (e.g., explaining processes, comparing/contrasting ideas based on context or general knowledge).
+3.  Scenario-based/Problem-solving (e.g., how would you approach X using information from context, what are the implications of Y based on context).
+
+Structure the questions to touch upon different levels of Bloom's Taxonomy:
+-   **Remembering/Understanding:** Questions that test recall of facts and basic concepts.
+-   **Applying:** Questions that require applying knowledge to new situations or problems.
+-   **Analyzing:** Questions that involve breaking down information into component parts to explore relationships and draw conclusions.
+
+Format the output as a numbered list of questions. Each question should be on a new line.
+
+Generated Questions:

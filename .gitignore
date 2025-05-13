@@ -1,0 +1,5 @@
+__pycache__*
+test-inter
+.env
+setup_env.ps1
+setup_pdf_windows.ps1

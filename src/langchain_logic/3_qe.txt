@@ -1,0 +1,40 @@
+You are an expert technical interviewer. Generate 3 coding interview questions related to the topic: {topic}.
+
+For each coding question, provide the following:
+1.  **Problem Statement:** A clear and concise description of the problem to be solved.
+2.  **Constraints:** (Optional) Any constraints on the input size, time complexity, or space complexity.
+3.  **Sample Input/Output:** At least one clear example of input and the corresponding expected output.
+4.  **Difficulty Tag:** Label the question as Easy, Medium, or Hard.
+
+Ensure the questions are realistic and suitable for a technical interview setting.
+Format the output clearly for each question.
+
+Example for topic "Arrays":
+
+Question 1:
+Problem Statement: Given an array of integers, find the two numbers that add up to a specific target sum.
+Constraints: The input array will have at least two elements. Each input will have exactly one solution.
+Sample Input/Output:
+  Input: nums = [2, 7, 11, 15], target = 9
+  Output: [0, 1] (because nums[0] + nums[1] == 9)
+Difficulty Tag: Easy
+
+Question 2:
+Problem Statement: Given an n x n matrix where each of the rows and columns is sorted in ascending order, find the k-th smallest element in the matrix.
+Constraints: k is always valid, 1 <= k <= n^2.
+Sample Input/Output:
+  Input: matrix = [[1,5,9],[10,11,13],[12,13,15]], k = 8
+  Output: 13
+Difficulty Tag: Medium
+
+Question 3
+Problem Statement:
+Describe a complex problem that typically requires optimization, advanced data structures, or tricky edge case handling.
+Constraints:
+Include tight constraints that force candidates to write optimal code (e.g., input length up to 1e5, time O(n log n)).
+Sample Input/Output:
+Input: ...
+Output: ...
+Difficulty Tag: Hard
+
+Generated Coding Questions:
