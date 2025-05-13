@@ -1,4 +1,4 @@
-# /home/ubuntu/mock_interview_app/src/pdf_exporter.py
+# /home/ubuntu/Manas_Android_Research/src/pdf_exporter.py
 import os
 import tempfile
 

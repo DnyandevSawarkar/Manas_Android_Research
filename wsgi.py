@@ -2,7 +2,7 @@ import os
 import sys
 
 # Add your project directory to the sys.path
-project_home = '/home/yashsawarkar/mock_interview_app'
+project_home = '/home/yashsawarkar/Manas_Android_Research'
 if project_home not in sys.path:
     sys.path.insert(0, project_home)
 

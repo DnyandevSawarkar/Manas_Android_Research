@@ -1,4 +1,4 @@
-# /home/ubuntu/mock_interview_app/src/main.py
+# /home/ubuntu/Manas_Android_Research/src/main.py
 import os
 import sys
 # DON'T CHANGE THIS !!!

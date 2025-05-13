@@ -1,4 +1,4 @@
-# /home/ubuntu/mock_interview_app/src/langchain_logic/question_generator.py
+# /home/ubuntu/Manas_Android_Research/src/langchain_logic/question_generator.py
 
 import os
 import re
@@ -99,7 +99,7 @@ def generate_theory_questions(topic):
         try:
             print("Falling back to theory question generation without web search.")
             # Corrected fallback prompt loading to avoid issues if search_context placeholders are still there
-            base_theory_prompt_str = load_prompt_template("/home/ubuntu/mock_interview_app/src/langchain_logic/theory_prompt_template.txt")
+            base_theory_prompt_str = load_prompt_template("/home/ubuntu/Manas_Android_Research/src/langchain_logic/theory_prompt_template.txt")
             # Remove the context block if it exists
             context_block = "\nBEGIN CONTEXT\n{search_context}\nEND CONTEXT\n"
             if context_block in base_theory_prompt_str:

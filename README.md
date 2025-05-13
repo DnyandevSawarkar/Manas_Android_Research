@@ -5,7 +5,7 @@ This application allows users to generate interview mock tests based on a specif
 ## Project Structure
 
 ```
-mock_interview_app/
+Manas_Android_Research/
 ├── src/
 │   ├── langchain_logic/
 │   │   ├── __init__.py
@@ -31,11 +31,11 @@ Follow these steps to run the application locally:
     *   `pip` (Python package installer).
 
 2.  **Clone or Download the Code:**
-    *   Ensure you have all the files from the `mock_interview_app` directory.
+    *   Ensure you have all the files from the `Manas_Android_Research` directory.
 
 3.  **Navigate to the Project Directory:**
     ```bash
-    cd path/to/mock_interview_app
+    cd path/to/Manas_Android_Research
     ```
 
 4.  **Create and Activate a Python Virtual Environment:**
